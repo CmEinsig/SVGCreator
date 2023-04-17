@@ -1,8 +1,11 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
+const { generateSvg } = require('./Logo Classes/generateSVG')
+const { makeShape } = require('./Logo Classes/makeShape')
 
 const questions = [
-    {
+  inquirer
+  .prompt({
         type: 'input',
         name: 'text',
         message: 'What text do you want to use?',
@@ -23,20 +26,15 @@ const questions = [
         name: 'shapeColor',
         message: 'What color do you want your shape to be?',
       },
-    ];
-    console.log(questions)
+    )];
 
-  inquirer.prompt(questions).then((answers) => {
-    generateSVG(answers);
-
-    //Code for html goes here 
-  });
-
-  function generateSVG(logo) {}
-
-
-
-fs.writeFile('logo.svg', logo, (err) => {
-    if (err) throw err;
-    console.log('SVG logo generated!');
-  });
+    .then((data) => {
+      const svgPath = './svgLogo.svg'
+      const finalLogo = makeShape(data);
+  
+      //Generate the svg logo here.
+      fs.writeFile(svgPath, generateSvg(finalLogo), (err) =>
+        err ? console.error(err) : console.log('Generated logo.svg')
+      );
+    })
+    .catch((err) => console.error(err));
